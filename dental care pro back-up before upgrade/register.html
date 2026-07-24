@@ -1,0 +1,144 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body>
+
+
+<!-- ================= NAVIGATION ================= -->
+
+<header>
+
+<nav class="navbar">
+
+<div class="logo">
+<i class="fa-solid fa-tooth"></i>
+DentalCare Pro
+</div>
+
+<!-- Navigation menu-button -->
+
+<button class="menu-toggle" id="menu-toggle">
+
+<i class="fa-solid fa-bars"></i>
+
+</button>
+
+<ul>
+
+<li>
+<a href="index.html">
+Home
+</a>
+</li>
+
+
+<li>
+<a href="about.html">
+About
+</a>
+</li>
+
+
+<li>
+<a href="services.html">
+Services
+</a>
+</li>
+
+
+<li>
+<a href="gallery.html">
+Gallery
+</a>
+</li>
+
+
+<li>
+<a href="faq.html">
+FAQ
+</a>
+</li>
+
+
+<li>
+<a href="appointment.html">
+Appointment
+</a>
+</li>
+
+
+<li>
+<a href="contact.html">
+Contact
+</a>
+</li>
+
+
+<li>
+<a href="login.html">
+Login
+</a>
+</li>
+
+
+</ul>
+
+</nav>
+
+</header>
+
+
+<section class="login-section">
+
+<div class="login-box">
+
+<h2>Register</h2>
+
+<input type="text" id="name" placeholder="Full Name">
+<input type="email" id="email" placeholder="Email">
+<input type="password" id="password" placeholder="Password">
+
+<button onclick="registerUser()">Register</button>
+
+<p id="msg"></p>
+
+</div>
+
+</section>
+
+<script>
+function registerUser() {
+
+    fetch("backend/register.php", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            name: document.getElementById("name").value,
+            email: document.getElementById("email").value,
+            password: document.getElementById("password").value
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        if (data.status === "success") {
+            document.getElementById("msg").innerText = "Registration successful!";
+        } else {
+            document.getElementById("msg").innerText = "Error registering user";
+        }
+
+    });
+
+}
+</script>
+
+
+</body>
+</html>

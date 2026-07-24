@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login | DentalCare Pro</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body>
+
+    
+<!-- ================= NAVIGATION ================= -->
+
+<header>
+
+<nav class="navbar">
+
+<div class="logo">
+<i class="fa-solid fa-tooth"></i>
+DentalCare Pro
+</div>
+
+<!-- Navigation menu-button -->
+
+<button class="menu-toggle" id="menu-toggle">
+
+<i class="fa-solid fa-bars"></i>
+
+</button>
+
+<ul>
+
+<li>
+<a href="index.html">
+Home
+</a>
+</li>
+
+
+<li>
+<a href="about.html">
+About
+</a>
+</li>
+
+
+<li>
+<a href="services.html">
+Services
+</a>
+</li>
+
+
+<li>
+<a href="gallery.html">
+Gallery
+</a>
+</li>
+
+
+<li>
+<a href="faq.html">
+FAQ
+</a>
+</li>
+
+
+<li>
+<a href="appointment.html">
+Appointment
+</a>
+</li>
+
+
+<li>
+<a href="contact.html">
+Contact
+</a>
+</li>
+
+
+<li>
+<a href="register.html">
+Register
+</a>
+</li>
+
+
+</ul>
+
+</nav>
+
+</header>
+
+<!--<section class="login-section">
+
+
+    <div class="login-box">
+
+        <h2>Login</h2>
+
+        <input type="email" id="email" placeholder="Email">
+        <input type="password" id="password" placeholder="Password">
+
+        <button onclick="loginUser()">Login</button>
+
+        <p id="msg"></p>
+
+    </div>
+
+</section>
+
+<script src="js/script.js"></script>
+
+<script>
+function loginUser() {
+
+    fetch("backend/login.php", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            email: document.getElementById("email").value,
+            password: document.getElementById("password").value
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        if (data.status === "success") {
+
+            if (data.role === "admin") {
+                window.location.href = "admin-dashboard.html";
+            } else {
+                window.location.href = "patient-dashboard.html";
+            }
+
+        } else {
+            document.getElementById("msg").innerText = "Invalid login";
+        }
+    });
+
+}
+</script>
+-->
+
+
+<head>
+    <!-- Add Google Identity Services Script -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+
+<!-- ... (navigation remains the same) ... -->
+
+<section class="login-section">
+    <div class="login-box">
+        <h2>Login</h2>
+        <form id="loginForm">
+            <input type="email" id="email" placeholder="Email" required>
+            <input type="password" id="password" placeholder="Password" required>
+            <button type="submit" id="loginBtn">Login</button>
+        </form>
+
+        <hr>
+        <!-- Google Login Button Container -->
+        <div id="g_id_onload"
+             data-client_id="YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"
+             data-callback="handleCredentialResponse">
+        </div>
+        <div class="g_id_signin" data-type="standard"></div>
+
+        <p id="msg"></p>
+    </div>
+</section>
+
+<script>
+// --- 1. Mobile Menu Logic ---
+document.getElementById('menu-toggle').addEventListener('click', function() {
+    document.querySelector('.navbar ul').classList.toggle('show');
+});
+
+// --- 2. Email/Password Login ---
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const msg = document.getElementById("msg");
+    const btn = document.getElementById("loginBtn");
+    
+    msg.innerText = "Authenticating...";
+    btn.disabled = true;
+
+    fetch("backend/login.php", { // Ensure this path is correct!
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            email: document.getElementById("email").value,
+            password: document.getElementById("password").value
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === "success") {
+            window.location.href = data.role === "admin" ? "admin-dashboard.html" : "patient-dashboard.html";
+        } else {
+            msg.innerText = "Invalid login credentials.";
+            btn.disabled = false;
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        msg.innerText = "Server error. Ensure backend/login.php is reachable.";
+        btn.disabled = false;
+    });
+});
+
+// --- 3. Google Login Handler ---
+function handleCredentialResponse(response) {
+    // Send response.credential to your server to verify
+    console.log("Encoded JWT ID token: " + response.credential);
+    fetch("backend/google-login.php", {
+        method: "POST",
+        body: JSON.stringify({ token: response.credential })
+    }).then(res => window.location.href = "patient-dashboard.html");
+}
+</script>
+
+</body>
+</html>
